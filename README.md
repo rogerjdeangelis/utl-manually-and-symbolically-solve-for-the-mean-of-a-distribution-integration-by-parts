@@ -1,0 +1,175 @@
+# utl-manually-and-symbolically-solve-for-the-mean-of-a-distribution-integration-by-parts
+Manually and symbolically solve for the mean of a distribution integration by parts
+    %let pgm=utl-manually-and-symbolically-solve-for-the-mean-of-a-distribution-integration-by-parts;
+
+    Manually and symbolically solve for the mean of a distribution integration by parts
+
+                            -lamda*t
+             f(t) = labda * e
+
+    github
+    http://tinyurl.com/3x26kjxm
+    https://github.com/rogerjdeangelis/utl-manually-and-symbolically-solve-for-the-mean-of-a-distribution-integration-by-parts
+
+    https://lidavidm.github.io/sympy/modules/stats.html
+
+    Consider the exponential distribution, which is easy to integrate or differentiate
+
+       SOLUTIONS
+
+           1 wps python sympy
+           2 solved by hand (integration by parts)
+                                    t
+                1         2         3         4         5
+             ---+---------+---------+---------+---------+---
+             |                                             |
+         0.3 +  *            EXAMPLE                       + 0.3
+             |   *                                         |
+             |    *                    -.5*t               |
+             |     *     f(t) = .5 * e                     |
+             |      **                                     |
+             |        *        mean= .5                    |
+             |         *       variance= .25               |
+    f(t) 0.2 +          **                                 + 0.2
+             |            *                                |
+             |             **                              |
+             |               **                            |
+             |                 **                          |
+             |                   **                        |
+             |                     **                      |
+         0.1 +                       ***                   + 0.1
+             | General form             ****               |
+             |                              ****           |
+             |                 -lamda*t         *****      |
+             | f(t) = lamda * e                      ****  |
+             |                                             |
+         0.0 +                                             + 0.0
+             ---+---------+---------+---------+---------+---
+                1         2         3         4         5
+                                    t
+
+    /*
+     _                   _
+    (_)_ __  _ __  _   _| |_
+    | | `_ \| `_ \| | | | __|
+    | | | | | |_) | |_| | |_
+    |_|_| |_| .__/ \__,_|\__|
+            |_|
+    */
+
+
+    /**************************************************************************************************************************/
+    /*                           oo                                                                                           */
+    /*                 -lamda*t   |                                                                                           */
+    /* f(t) = labda * e           |                                                                                           */
+    /*                            0                                                                                           */
+    /*                                                                                                                        */
+    /**************************************************************************************************************************/
+
+    /*                                                       _   _
+    / |   ___ _ __  ___   _ __  _ __ ___   ___   _ __  _   _| |_| |__   ___  _ __
+    | |  / _ \ `_ \/ __| | `_ \| `__/ _ \ / __| | `_ \| | | | __| `_ \ / _ \| `_ \
+    | | |  __/ |_) \__ \ | |_) | | | (_) | (__  | |_) | |_| | |_| | | | (_) | | | |
+    |_|  \___| .__/|___/ | .__/|_|  \___/ \___| | .__/ \__, |\__|_| |_|\___/|_| |_|
+             |_|         |_|                    |_|    |___/
+    */
+
+    %utl_submit_wps64x('
+    proc python;
+    submit;
+    from sympy.stats import Exponential, density, cdf, E;
+    from sympy.stats import variance, std;
+    from sympy import Symbol;
+    l = Symbol("lambda", positive=True);
+    z = Symbol("z");
+    X = Exponential("x", l);
+    print(density(X)(z));
+    print(cdf(X)(z));
+    print(E(X));
+    print(variance(X));
+    endsubmit;
+    ');
+
+    /**************************************************************************************************************************/
+    /*                                                                                                                        */
+    /*  mean     = 1/lambda                                                                                                   */
+    /*                                                                                                                        */
+    /*  variance = lambda**(-2)                                                                                               */
+    /*                                                                                                                        */
+    /**************************************************************************************************************************/
+
+    /*___              _               _   _             _                     _
+    |___ \   ___  ___ | |_   _____  __| | | |__  _   _  | |__   __ _ _ __   __| |
+      __) | / __|/ _ \| \ \ / / _ \/ _` | | `_ \| | | | | `_ \ / _` | `_ \ / _` |
+     / __/  \__ \ (_) | |\ V /  __/ (_| | | |_) | |_| | | | | | (_| | | | | (_| |
+    |_____| |___/\___/|_| \_/ \___|\__,_| |_.__/ \__, | |_| |_|\__,_|_| |_|\__,_|
+                                                 |___/
+    */
+
+    Using integration by parts we can solve for the mean
+
+    The mean(expectation) of the exponential distribution is defined as
+            _                                _
+           /   1        - c*t               /
+           |   - * t * e    dt   =   udv -  | vdu   ( don't wory about the constants)
+          _/   c                           _/
+
+
+    Using integration by parts (for simplicity lets remove the constants for now).
+
+      1  c
+      -*e
+      c
+                                             -t      -t
+    Also not the derivative and integral of e    is e
+
+
+               _                            _
+              /  1      -c*t      1  c     /       -t
+              |  -*t * e    dt  = -*e     |  t * e   dt
+             _/  c                c      _/
+
+                                     _
+                                    /  -t       -t
+             u  = t           v =   | e  dt  = e
+                                   _/
+
+                                   -t
+             du = dt        dv = e   dt
+
+                _                             _
+               /       -t             -t     /    -t
+              |  t * e   dt  =  t * e   -   |   e   dt
+             _/                            _/
+                 u   dt           v             du
+        or
+                _
+               /       -t             -t     -t
+              |  t * e   dt  =  t * e   -   e
+             _/
+
+
+    Original integral now becomes, after applying the constant.
+               _
+              /  1      -c*t          -c        -t    -t
+              |  -*t * e    dt  =c * e * ( t * e   -  e   + Constant )
+             _/  c
+
+    The constant only shifts the density and does not affect the area under the curve(mean).
+
+
+                                         oo
+              1         -ct   1     -ct   |        1
+      mean =  _ * t * e   -   _ * e       |    =   _
+              c               c           0        c
+
+             -ct
+      Note: e    overpowers the t multiplier
+
+    /*              _
+      ___ _ __   __| |
+     / _ \ `_ \ / _` |
+    |  __/ | | | (_| |
+     \___|_| |_|\__,_|
+
+    */
